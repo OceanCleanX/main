@@ -1,0 +1,12 @@
+# env files
+.env
+
+# project files
+.husarnet-config
+
+# filesystem
+.DS_Store
+
+# editors
+.idea
+.vscode

@@ -1,0 +1,15 @@
+name: data-poster
+
+services:
+  data-poster:
+    extends:
+      file: base.yaml
+      service: base
+    network_mode: service:husarnet-data-poster
+
+  husarnet-data-poster:
+    extends:
+      file: base.yaml
+      service: husarnet
+    environment:
+      - HUSARNET_HOSTNAME=data-poster

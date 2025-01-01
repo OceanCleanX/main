@@ -1,0 +1,15 @@
+name: motor-control
+
+services:
+  motor-control:
+    extends:
+      file: base.yaml
+      service: base
+    network_mode: service:husarnet-motor-control
+
+  husarnet-motor-control:
+    extends:
+      file: base.yaml
+      service: husarnet
+    environment:
+      - HUSARNET_HOSTNAME=motor-control
