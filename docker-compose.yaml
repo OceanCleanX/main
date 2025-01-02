@@ -9,9 +9,9 @@ services:
       dockerfile: ./Dockerfile
     volumes:
       - .:/app
+      - ./config/cyclonedds/dev.xml:/cyclonedds.xml
     environment:
       - CYCLONEDDS_URI=file:///cyclonedds.xml
-    network_mode: service:husarnet
     stdin_open: true
     tty: true
   husarnet:

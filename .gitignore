@@ -10,3 +10,8 @@
 # editors
 .idea
 .vscode
+
+# build system
+build
+install
+log
