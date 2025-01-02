@@ -1,0 +1,74 @@
+name: oceancleanx
+
+services:
+  # Base services, shared by all devices, should not be run directly
+  base:
+    profiles: ["base"]
+    image: oceancleanx:base
+    build:
+      dockerfile: ./Dockerfile
+    volumes:
+      - .:/app
+    environment:
+      - CYCLONEDDS_URI=file:///cyclonedds.xml
+    network_mode: service:husarnet
+    stdin_open: true
+    tty: true
+  husarnet:
+    profiles: ["base"]
+    image: husarnet/husarnet
+    restart: unless-stopped
+    volumes:
+      - ./.husarnet-config:/var/lib/husarnet
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    env_file: ./.env
+
+  # Remote services
+  remote-base:
+    profiles: ["base"]
+    extends:
+      service: base
+    network_mode: service:husarnet-remote
+    volumes:
+      - ./config/cyclonedds/remote.xml:/cyclonedds.xml
+  data-poster:
+    profiles: ["remote"]
+    extends:
+      service: remote-base
+    network_mode: service:husarnet-remote
+  motor-control:
+    profiles: ["remote"]
+    extends:
+      service: remote-base
+    network_mode: service:husarnet-remote
+  husarnet-remote:
+    profiles: ["remote"]
+    extends:
+      service: husarnet
+    environment:
+      - HUSARNET_HOSTNAME=remote
+
+  # Jetson services
+  jetson-base:
+    profiles: ["base"]
+    extends:
+      service: base
+    network_mode: service:husarnet-jetson
+    volumes:
+      - ./config/cyclonedds/jetson.xml:/cyclonedds.xml
+  data-collector:
+    profiles: ["jetson"]
+    extends:
+      service: jetson-base
+    network_mode: service:husarnet-jetson
+  husarnet-jetson:
+    profiles: ["jetson"]
+    extends:
+      service: husarnet
+    environment:
+      - HUSARNET_HOSTNAME=jetson
