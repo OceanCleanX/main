@@ -14,7 +14,7 @@ app.include_router(motor_command.router)
 
 def main(args=None):
     rclpy.init(args=args)
-    uvicorn.run(app)
+    uvicorn.run(app)  # TODO: custom logger
 
 
 if __name__ == "__main__":
